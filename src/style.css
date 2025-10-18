@@ -1,5 +1,30 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    font-family: 'Noto Sans Arabic', 'Arial Unicode MS', 'Tahoma', 'Arial', sans-serif;
+}
 
 body {
     background-color: #ef4444;
+    direction: rtl;
+    text-align: right;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Ensure proper Arabic text rendering on mobile */
+input, textarea, button {
+    font-family: 'Noto Sans Arabic', 'Arial Unicode MS', 'Tahoma', 'Arial', sans-serif;
+    direction: rtl;
+    text-align: right;
+}
+
+/* Fix for mobile text rendering */
+@media (max-width: 768px) {
+    * {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
 }

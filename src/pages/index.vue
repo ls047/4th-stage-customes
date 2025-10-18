@@ -6,7 +6,7 @@
         :transition="{ duration: 0.5, ease: 'easeInOut' }"
     >
         <!-- Header -->
-        <div dir="rtl" class="container mx-auto px-4 py-4 md:py-8">
+        <div class="container mx-auto px-4 py-4 md:py-8">
             <motion.div
                 class="text-center mb-6 md:mb-12"
                 :initial="{ opacity: 0, y: 20 }"
@@ -183,7 +183,7 @@
                             :whileHover="{ scale: 1.05 }"
                             :whileTap="{ scale: 0.95 }"
                         >
-                            توليد ملف المقاسات
+                            توليد ملف HTML
                         </motion.button>
 
                         <div class="flex justify-center">
@@ -261,63 +261,211 @@ onMounted(() => {
     loadFromStorage()
 })
 
-// Generate file function
+// Generate HTML file function
 const generateFile = () => {
-    // Create text content with RTL formatting
-    let textContent = ''
+    // Create HTML content with proper Arabic formatting
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقاسات الطالب - ${formData.studentName}</title>
+    <style>
+        * {
+            font-family: 'Arial', 'Tahoma', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    // Add RTL marker at the beginning
-    textContent += '\u202B' // Right-to-left embedding
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+            text-align: right;
+        }
 
-    // Header with cleaner spacing
-    textContent += '\n'
-    textContent += '═'.repeat(50) + '\n'
-    textContent += '           مقاسات الطالب\n'
-    textContent += '═'.repeat(50) + '\n'
-    textContent += '\n'
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
 
-    // Student info section
-    textContent += 'معلومات الطالب:\n'
-    textContent += '─'.repeat(30) + '\n'
-    textContent += `الاسم: ${formData.studentName}\n`
-    textContent += `الرقم: ${formData.studentNumber}\n`
-    textContent += `التاريخ: ${new Date().toLocaleDateString('ar-SA')}\n`
-    textContent += '\n'
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-    // Measurements section
-    textContent += 'المقاسات الجسدية:\n'
-    textContent += '─'.repeat(30) + '\n'
-    textContent += `طول الردن: ${formData.waistLength}\n`
-    textContent += `الطول: ${formData.height}\n`
-    textContent += `عرض الجتف: ${formData.shoulderWidth}\n`
-    textContent += `قياس الرأس: ${formData.headSize}\n`
-    textContent += '\n'
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
 
-    // Clothing section
-    textContent += 'خيارات الملابس:\n'
-    textContent += '─'.repeat(30) + '\n'
-    textContent += `نوع القطعة: ${formData.clothingType}\n`
-    textContent += '\n'
+        .content {
+            padding: 30px;
+        }
 
-    // Notes section
-    if (formData.additionalNotes) {
-        textContent += 'ملاحظات إضافية:\n'
-        textContent += '─'.repeat(30) + '\n'
-        textContent += `${formData.additionalNotes}\n`
-        textContent += '\n'
-    }
+        .section {
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 20px;
+        }
 
-    // Footer
-    textContent += '═'.repeat(50) + '\n'
-    textContent += 'تم توليد هذا الملف بواسطة مولد مقاسات الطلاب\n'
-    textContent += '═'.repeat(50) + '\n'
+        .section:last-child {
+            border-bottom: none;
+        }
 
-    // Create and download text file with RTL support
-    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' })
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 2px solid #3498db;
+            display: inline-block;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-right: 4px solid #3498db;
+            font-size: 1.1em;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #34495e;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .notes {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>مقاسات الطالب</h1>
+            <p>Student Measurements Report</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title">معلومات الطالب</h2>
+                <div class="info-item">
+                    <div class="info-label">الاسم:</div>
+                    <div class="info-value">${formData.studentName}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">الرقم:</div>
+                    <div class="info-value">${formData.studentNumber}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">التاريخ:</div>
+                    <div class="info-value">${new Date().toLocaleDateString('ar-SA')}</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">المقاسات الجسدية</h2>
+                <div class="info-item">
+                    <div class="info-label">طول الردن:</div>
+                    <div class="info-value">${formData.waistLength}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">الطول:</div>
+                    <div class="info-value">${formData.height}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">عرض الجتف:</div>
+                    <div class="info-value">${formData.shoulderWidth}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">قياس الرأس:</div>
+                    <div class="info-value">${formData.headSize}</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">خيارات الملابس</h2>
+                <div class="info-item">
+                    <div class="info-label">نوع القطعة:</div>
+                    <div class="info-value">${formData.clothingType}</div>
+                </div>
+            </div>
+
+            ${formData.additionalNotes ? `
+            <div class="section">
+                <h2 class="section-title">ملاحظات إضافية</h2>
+                <div class="notes">
+                    <div class="info-value">${formData.additionalNotes}</div>
+                </div>
+            </div>
+            ` : ''}
+        </div>
+
+        <div class="footer">
+            تم توليد هذا الملف بواسطة مولد مقاسات الطلاب
+        </div>
+    </div>
+</body>
+</html>`
+
+    // Create and download HTML file
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `مقاسات_${formData.studentName}_${formData.studentNumber}.txt`
+    link.download = `مقاسات_${formData.studentName}_${formData.studentNumber}.html`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
