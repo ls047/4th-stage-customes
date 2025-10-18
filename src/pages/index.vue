@@ -247,7 +247,7 @@ const loadFromStorage = () => {
 const clearSavedData = () => {
     localStorage.removeItem('sizeGeneratorData')
     Object.keys(formData).forEach(key => {
-        formData[key] = ''
+        (formData as any)[key] = ''
     })
 }
 
