@@ -454,7 +454,7 @@ const generateFile = () => {
         </div>
 
         <div class="footer">
-            تم توليد هذا الملف بواسطة مولد مقاسات الطلاب
+            تم توليد هذا الملف بواسطة BitXero
         </div>
     </div>
 </body>
