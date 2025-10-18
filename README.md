@@ -34,7 +34,7 @@ A modern Vue 3 application built with TypeScript, featuring Service-Oriented Arc
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone <your-new-repository-url>
 cd vue-ts-soa
 ```
 

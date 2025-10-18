@@ -2,7 +2,7 @@
   "name": "vue-ts-soa",
   "version": "1.0.0",
   "description": "A modern Vue 3 application built with TypeScript, featuring Service-Oriented Architecture (SOA) principles",
-  "private": true,
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "vite",
