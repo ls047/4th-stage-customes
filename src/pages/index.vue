@@ -57,6 +57,52 @@
                         </div>
                     </div>
 
+                    <!-- User Image Upload -->
+                    <div class="space-y-4">
+                        <label class="block text-base md:text-lg font-semibold text-gray-200 mb-2 md:mb-3">
+                            صورة الطالب (اختياري)
+                        </label>
+                        <div class="flex flex-col items-center space-y-4">
+                            <input
+                                ref="imageInput"
+                                @change="handleImageUpload"
+                                type="file"
+                                accept="image/*"
+                                class="hidden"
+                                id="userImage"
+                            />
+                            <label
+                                for="userImage"
+                                class="cursor-pointer bg-gray-800 border-2 border-dashed border-gray-600 rounded-lg p-6 w-full text-center hover:border-red-500 transition-colors duration-300"
+                            >
+                                <div class="flex flex-col items-center space-y-2">
+                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-gray-300 text-sm md:text-base">
+                                        اضغط لرفع صورة الطالب
+                                    </span>
+                                </div>
+                            </label>
+
+                            <!-- Image Preview -->
+                            <div v-if="formData.userImage" class="mt-4">
+                                <img
+                                    :src="formData.userImage"
+                                    alt="صورة الطالب"
+                                    class="max-w-xs max-h-48 rounded-lg shadow-lg border-2 border-gray-600"
+                                />
+                                <button
+                                    @click="removeImage"
+                                    type="button"
+                                    class="mt-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors duration-300"
+                                >
+                                    إزالة الصورة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Body Measurements -->
                     <div class="space-y-4 md:space-y-6">
                         <h3 class="text-lg md:text-2xl font-bold text-gray-200 border-b border-gray-600 pb-2">
@@ -217,6 +263,7 @@ import { reactive, watch, onMounted } from 'vue'
 const formData = reactive({
     studentName: '',
     studentNumber: '',
+    userImage: '',
     waistLength: '',
     height: '',
     shoulderWidth: '',
@@ -247,7 +294,7 @@ const loadFromStorage = () => {
 const clearSavedData = () => {
     localStorage.removeItem('sizeGeneratorData')
     Object.keys(formData).forEach(key => {
-        (formData as any)[key] = ''
+        (formData as Record<string, string>)[key] = ''
     })
 }
 
@@ -260,6 +307,29 @@ watch(formData, () => {
 onMounted(() => {
     loadFromStorage()
 })
+
+// Handle image upload
+const handleImageUpload = (event: Event) => {
+    const target = event.target as HTMLInputElement
+    const file = target.files?.[0]
+
+    if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            formData.userImage = e.target?.result as string
+        }
+        reader.readAsDataURL(file)
+    }
+}
+
+// Remove image
+const removeImage = () => {
+    formData.userImage = ''
+    const imageInput = document.getElementById('userImage') as HTMLInputElement
+    if (imageInput) {
+        imageInput.value = ''
+    }
+}
 
 // Generate HTML file function
 const generateFile = () => {
@@ -401,6 +471,14 @@ const generateFile = () => {
         <div class="content">
             <div class="section">
                 <h2 class="section-title">معلومات الطالب</h2>
+                ${formData.userImage ? `
+                <div class="info-item" style="text-align: center;">
+                    <div class="info-label" style="text-align: center; margin-bottom: 15px;">صورة الطالب:</div>
+                    <div class="info-value" style="display: flex; justify-content: center;">
+                        <img src="${formData.userImage}" alt="صورة الطالب" style="width: 150px; height: 150px; border-radius: 50%; border: 3px solid #3498db; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                    </div>
+                </div>
+                ` : ''}
                 <div class="info-item">
                     <div class="info-label">الاسم:</div>
                     <div class="info-value">${formData.studentName}</div>
