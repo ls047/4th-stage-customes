@@ -263,99 +263,65 @@ onMounted(() => {
 
 // Generate file function
 const generateFile = () => {
-    // Create canvas for image generation
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
+    // Create text content with RTL formatting
+    let textContent = ''
 
-    // Set canvas size
-    canvas.width = 800
-    canvas.height = 1000
+    // Add RTL marker at the beginning
+    textContent += '\u202B' // Right-to-left embedding
 
-    // Background
-    ctx.fillStyle = '#1f2937'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    // Header with cleaner spacing
+    textContent += '\n'
+    textContent += '═'.repeat(50) + '\n'
+    textContent += '           مقاسات الطالب\n'
+    textContent += '═'.repeat(50) + '\n'
+    textContent += '\n'
 
-    // Header
-    ctx.fillStyle = '#ef4444'
-    ctx.font = 'bold 32px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText('مقاسات الطالب', canvas.width / 2, 60)
-
-    // Student info
-    ctx.fillStyle = '#f3f4f6'
-    ctx.font = '24px Arial'
-    ctx.textAlign = 'right'
-    ctx.fillText(`الاسم: ${formData.studentName}`, canvas.width - 50, 120)
-    ctx.fillText(`الرقم: ${formData.studentNumber}`, canvas.width - 50, 160)
-    ctx.fillText(`التاريخ: ${new Date().toLocaleDateString('ar-SA')}`, canvas.width - 50, 200)
+    // Student info section
+    textContent += 'معلومات الطالب:\n'
+    textContent += '─'.repeat(30) + '\n'
+    textContent += `الاسم: ${formData.studentName}\n`
+    textContent += `الرقم: ${formData.studentNumber}\n`
+    textContent += `التاريخ: ${new Date().toLocaleDateString('ar-SA')}\n`
+    textContent += '\n'
 
     // Measurements section
-    ctx.fillStyle = '#fbbf24'
-    ctx.font = 'bold 28px Arial'
-    ctx.fillText('المقاسات الجسدية', canvas.width - 50, 280)
-
-    ctx.fillStyle = '#f3f4f6'
-    ctx.font = '20px Arial'
-    ctx.fillText(`طول الردن: ${formData.waistLength}`, canvas.width - 50, 320)
-    ctx.fillText(`الطول: ${formData.height}`, canvas.width - 50, 360)
-    ctx.fillText(`عرض الجتف: ${formData.shoulderWidth}`, canvas.width - 50, 400)
-    ctx.fillText(`قياس الرأس: ${formData.headSize}`, canvas.width - 50, 440)
+    textContent += 'المقاسات الجسدية:\n'
+    textContent += '─'.repeat(30) + '\n'
+    textContent += `طول الردن: ${formData.waistLength}\n`
+    textContent += `الطول: ${formData.height}\n`
+    textContent += `عرض الجتف: ${formData.shoulderWidth}\n`
+    textContent += `قياس الرأس: ${formData.headSize}\n`
+    textContent += '\n'
 
     // Clothing section
-    ctx.fillStyle = '#fbbf24'
-    ctx.font = 'bold 28px Arial'
-    ctx.fillText('خيارات الملابس', canvas.width - 50, 520)
-
-    ctx.fillStyle = '#f3f4f6'
-    ctx.font = '20px Arial'
-    ctx.fillText(`نوع القطعة: ${formData.clothingType}`, canvas.width - 50, 560)
+    textContent += 'خيارات الملابس:\n'
+    textContent += '─'.repeat(30) + '\n'
+    textContent += `نوع القطعة: ${formData.clothingType}\n`
+    textContent += '\n'
 
     // Notes section
     if (formData.additionalNotes) {
-        ctx.fillStyle = '#fbbf24'
-        ctx.font = 'bold 28px Arial'
-        ctx.fillText('ملاحظات إضافية', canvas.width - 50, 640)
-
-        ctx.fillStyle = '#f3f4f6'
-        ctx.font = '20px Arial'
-        const notes = formData.additionalNotes
-        const words = notes.split(' ')
-        let line = ''
-        let y = 680
-
-        for (let i = 0; i < words.length; i++) {
-            const testLine = line + words[i] + ' '
-            const metrics = ctx.measureText(testLine)
-            const testWidth = metrics.width
-
-            if (testWidth > 700 && i > 0) {
-                ctx.fillText(line, canvas.width - 50, y)
-                line = words[i] + ' '
-                y += 30
-            } else {
-                line = testLine
-            }
-        }
-        ctx.fillText(line, canvas.width - 50, y)
+        textContent += 'ملاحظات إضافية:\n'
+        textContent += '─'.repeat(30) + '\n'
+        textContent += `${formData.additionalNotes}\n`
+        textContent += '\n'
     }
 
     // Footer
-    ctx.fillStyle = '#9ca3af'
-    ctx.font = '16px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText('تم توليد هذا الملف بواسطة مولد مقاسات الطلاب', canvas.width / 2, 950)
+    textContent += '═'.repeat(50) + '\n'
+    textContent += 'تم توليد هذا الملف بواسطة مولد مقاسات الطلاب\n'
+    textContent += '═'.repeat(50) + '\n'
 
-    // Convert canvas to image and download
-    canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `مقاسات_${formData.studentName}_${formData.studentNumber}.png`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        URL.revokeObjectURL(url)
-    }, 'image/png')
+    // Create and download text file with RTL support
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `مقاسات_${formData.studentName}_${formData.studentNumber}.txt`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
 }
     </script>
 
